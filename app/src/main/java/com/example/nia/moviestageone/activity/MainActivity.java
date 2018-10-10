@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         String FlickrQuery_key = "?api_key=";
         String Certifications = "&certification_country=US&certification=R";
 
-        String FlickrApiKey = "7d2e7ba1548f223721f9fcdcc521fb6c";
+        String FlickrApiKey = " ";
         String language = "en-US";
         String endpoint = " ";
         if (SearchItem.equalsIgnoreCase("vote_count.desc")) {
