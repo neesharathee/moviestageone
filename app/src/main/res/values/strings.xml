@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Movie Stage One</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_network_gallery">NetworkGalleryActivity</string>
+    <string name="title_activity_sd_card_gallery">SdCardGalleryActivity</string>
+    <string name="action_settings">Set Default</string>
+    <string name="action_row3">Three Columns</string>
+    <string name="action_row4">Four Columns</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sort_by_rating">Sort by Rating</string>
+    <string name="user_rating">User Rating :</string>
+    <string name="title">Title</string>
+    <string name="release_date">Release Date :</string>
+    <string name="date">20/2/2018</string>
+    <string name="rating_value">7.85</string>
+    <string name="dummy_text">This is a movie overview</string>
+</resources>

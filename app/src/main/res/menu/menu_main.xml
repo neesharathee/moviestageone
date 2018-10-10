@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.nia.flickrbrowser.MainActivity">
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/row3"
+        android:orderInCategory="100"
+        android:title="@string/action_row3"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/row4"
+        android:orderInCategory="100"
+        android:title="@string/sort_by_rating"
+        app:showAsAction="never" />
+
+</menu>
