@@ -31,25 +31,17 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = MainActivity.class.getSimpleName();
-    public static final int PAGE_SIZE = 5;
-
     Toolbar toolbar;
-    int visibleItemCount, totalItemCount;
-
     private ArrayList<Image> images;
     private ProgressDialog pDialog;
     private GalleryAdapter mAdapter;
     private RecyclerView recyclerView;
-
-
     StaggeredGridLayoutManager mLayoutManager;
-    String SearchItem = "popularity.desc";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -62,27 +54,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) {
-                    visibleItemCount = mLayoutManager.getChildCount();
-                    totalItemCount = mLayoutManager.getItemCount();
-                    int[] firstVisibleItemPositions = mLayoutManager.findFirstVisibleItemPositions(null);
-                    if ((visibleItemCount + firstVisibleItemPositions[0]) >= totalItemCount
-                            && firstVisibleItemPositions[0] >= 0 && totalItemCount >= PAGE_SIZE) {
-                        fetchImages(SearchItem);
-
-                    }
-
-                }
-            }
-        });
 
         recyclerView.addOnItemTouchListener(new GalleryAdapter.RecyclerTouchListener(getApplicationContext(), recyclerView, new GalleryAdapter.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-//
+
                 Bundle bundle = new Bundle();
                 bundle.putString("title", images.get(position).getTitle());
                 bundle.putInt("user_rating", images.get(position).getVoteAverage());
@@ -93,8 +69,6 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, Main2Activity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
-
-
             }
 
             @Override
@@ -102,8 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }));
-        fetchImages(SearchItem);
-
+        fetchImages("popular");
     }
 
 
@@ -120,18 +93,15 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (id == R.id.action_settings) {
-            mLayoutManager.setSpanCount(2);
-            return true;
-        }
-        if (id == R.id.row3) {
-            mLayoutManager.setSpanCount(3);
+            String SearchItem = "popular";
+            fetchImages(SearchItem);
+            mAdapter.notifyDataSetChanged();
             return true;
         }
         if (id == R.id.row4) {
-            String SearchItem = "vote_count.desc";
+            String SearchItem = "top_rated";
             fetchImages(SearchItem);
             mAdapter.notifyDataSetChanged();
-            mLayoutManager.setSpanCount(3);
             return true;
         }
 
@@ -143,23 +113,18 @@ public class MainActivity extends AppCompatActivity {
 
         pDialog.setMessage("Hang on a sec...");
         pDialog.show();
+
         String flickrQuery_per_page = "&page=10";
-        String flickrQuery_url = "https://api.themoviedb.org/3/discover/movie";
-        String flickrQuery_format = "&language=";
-        String flickrQuery_tag = "&sort_by=";
+        String flickrQuery_url = "https://api.themoviedb.org/3/movie/";
         String FlickrQuery_key = "?api_key=";
-        String Certifications = "&certification_country=US&certification=R";
-
         String FlickrApiKey = " ";
-        String language = "en-US";
         String endpoint = " ";
-        if (SearchItem.equalsIgnoreCase("vote_count.desc")) {
-            endpoint = flickrQuery_url + FlickrQuery_key + FlickrApiKey + flickrQuery_format + language + Certifications + flickrQuery_tag + SearchItem + flickrQuery_per_page;
 
-        } else {
-            endpoint = flickrQuery_url + FlickrQuery_key + FlickrApiKey + flickrQuery_format + language + flickrQuery_tag + SearchItem + flickrQuery_per_page;
+        if (SearchItem.equalsIgnoreCase("popular")) {
+            endpoint = flickrQuery_url + SearchItem + FlickrQuery_key + FlickrApiKey + flickrQuery_per_page;
+        } else if (SearchItem.equalsIgnoreCase("top_rated")) {
+            endpoint = flickrQuery_url + SearchItem + FlickrQuery_key + FlickrApiKey + flickrQuery_per_page;
         }
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, endpoint, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -224,3 +189,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+

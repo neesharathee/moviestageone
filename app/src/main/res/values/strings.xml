@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Movie Stage One</string>
+    <string name="app_name">Movies</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="title_activity_network_gallery">NetworkGalleryActivity</string>
     <string name="title_activity_sd_card_gallery">SdCardGalleryActivity</string>
@@ -15,4 +15,6 @@
     <string name="date">20/2/2018</string>
     <string name="rating_value">7.85</string>
     <string name="dummy_text">This is a movie overview</string>
+    <string name="popular_movies">Popular Movies</string>
+    <string name="top_rated_movies">Top Rated Movies</string>
 </resources>

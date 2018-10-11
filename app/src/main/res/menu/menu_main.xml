@@ -5,17 +5,12 @@
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/row3"
-        android:orderInCategory="100"
-        android:title="@string/action_row3"
+        android:title="@string/popular_movies"
         app:showAsAction="never" />
     <item
         android:id="@+id/row4"
         android:orderInCategory="100"
-        android:title="@string/sort_by_rating"
+        android:title="@string/top_rated_movies"
         app:showAsAction="never" />
 
 </menu>
