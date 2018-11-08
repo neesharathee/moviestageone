@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 bundle.putString("release_date", images.get(position).getDate());
                 bundle.putString("overview", images.get(position).getOverview());
                 bundle.putString("poster_path", images.get(position).getFinalURl());
+                bundle.putInt("movie_id", images.get(position).getMovieId());
 
                 Intent intent = new Intent(MainActivity.this, Main2Activity.class);
                 intent.putExtras(bundle);
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         String flickrQuery_per_page = "&page=10";
         String flickrQuery_url = "https://api.themoviedb.org/3/movie/";
         String FlickrQuery_key = "?api_key=";
-        String FlickrApiKey = " ";
+        String FlickrApiKey = "7d2e7ba1548f223721f9fcdcc521fb6c";
         String endpoint = " ";
 
         if (SearchItem.equalsIgnoreCase("popular")) {

@@ -91,5 +91,25 @@
             android:textSize="@dimen/subtext"
             android:textStyle="normal"
             tools:text="@string/dummy_text" />
+        <TextView
+            android:id="@+id/movie_trailers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margins"
+            android:layout_marginStart="@dimen/margins"
+            android:layout_marginTop="@dimen/margins"
+            android:padding="@dimen/paddings"
+            android:textSize="@dimen/text_title"
+            android:textStyle="bold"
+            tools:text="Trailers"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_marginLeft="@dimen/margins"
+            android:layout_marginStart="@dimen/margins"
+            android:layout_marginTop="@dimen/margins"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </android.support.v7.widget.RecyclerView>
     </LinearLayout>
 </ScrollView>
