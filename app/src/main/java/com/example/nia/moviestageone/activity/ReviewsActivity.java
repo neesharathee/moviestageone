@@ -7,6 +7,8 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -28,6 +30,7 @@ import static com.android.volley.VolleyLog.TAG;
 
 public class ReviewsActivity extends AppCompatActivity {
     RecyclerView recyclerView;
+    TextView emptyData;
     ReviewsAdapter mAdapter;
     ArrayList<Review> reviewList;
     ArrayList<String> numbers;
@@ -41,6 +44,7 @@ public class ReviewsActivity extends AppCompatActivity {
         numbers=new ArrayList<>();
         pDialog= new ProgressDialog(this);
         recyclerView = findViewById(R.id.recycler);
+        emptyData = findViewById(R.id.no_content);
         Bundle bundle = getIntent().getExtras();
         assert bundle != null;
         int movieid = bundle.getInt("MOVIEID");
@@ -52,6 +56,7 @@ public class ReviewsActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
 
         fetchReviews(movieid);
+
     }
     private void fetchReviews(int movieid) {
 
@@ -88,6 +93,10 @@ public class ReviewsActivity extends AppCompatActivity {
                         numbers.add(String.valueOf(num));
                         num++;
                     }
+                    if(reviewList.size()==0){
+                        emptyData.setVisibility(View.VISIBLE);
+                    }else emptyData.setVisibility(View.GONE);
+
                     mAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     Log.e(TAG, "Json parsing error: " + e.getMessage());

@@ -25,10 +25,24 @@
         android:layout_marginTop="@dimen/margins"
         android:layout_marginRight="@dimen/margins"
         android:layout_marginEnd="@dimen/margins"
-        android:nestedScrollingEnabled="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </android.support.v7.widget.RecyclerView>
+    <TextView
+        android:id="@+id/no_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margins"
+        android:layout_marginStart="@dimen/margins"
+        android:layout_marginTop="@dimen/margins"
+        android:layout_marginRight="@dimen/margins"
+        android:layout_marginEnd="@dimen/margins"
+        android:textAlignment="center"
+        android:padding="@dimen/paddings"
+        android:textSize="@dimen/text_title"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:text="No trailers available for this movie"/>
 
 
 

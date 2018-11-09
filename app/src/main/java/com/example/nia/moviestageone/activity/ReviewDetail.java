@@ -8,6 +8,7 @@ import com.example.nia.moviestageone.R;
 
 public class ReviewDetail extends AppCompatActivity {
 TextView tvContent,tvAuthor,tvUrl;
+String content,author,url;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,10 +18,16 @@ TextView tvContent,tvAuthor,tvUrl;
         tvUrl=findViewById(R.id.tv_url);
 
         Bundle bundle = getIntent().getExtras();
-        assert bundle != null;
-        String content = bundle.getString("content");
-        String author = bundle.getString("author");
-        String url = bundle.getString("url");
+        if(bundle!=null) {
+             content = bundle.getString("content");
+             author = bundle.getString("author");
+             url = bundle.getString("url");
+        } else
+        {
+             content = "No content found";
+             author = "No content found";
+             url = "No content found";
+        }
 
         tvContent.setText(content);
         tvAuthor.setText(author);

@@ -25,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.util.ArrayList;
 
 import static com.android.volley.VolleyLog.TAG;
@@ -66,6 +67,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MyViewHo
                // Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + youtubeVidId));
                 //context.startActivity(intent);
                 playVideo(youtubeVidId);
+               // URL url = "https://www.youtube.com/watch?v="+youtubeVidId;
             }
         });
 
@@ -84,7 +86,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MyViewHo
 
     @Override
     public int getItemCount() {
-
+//if(trailers.size()==0)
 
         return trailers.size();
     }
@@ -111,5 +113,12 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MyViewHo
         }
 
         context.startActivity(intent);
+    }
+    public void playMedia(Uri file) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(file);
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(intent);
+        }
     }
 }

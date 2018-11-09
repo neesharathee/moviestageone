@@ -7,6 +7,8 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -26,6 +28,7 @@ import static com.android.volley.VolleyLog.TAG;
 
 public class TrailerActivity extends AppCompatActivity {
     RecyclerView recyclerView;
+    TextView emptyData;
     TrailerAdapter mAdapter;
     ArrayList<String> trailers;
     ArrayList<String> numbers;
@@ -40,6 +43,8 @@ public class TrailerActivity extends AppCompatActivity {
         numbers = new ArrayList<>();
         pDialog = new ProgressDialog(this);
         recyclerView = findViewById(R.id.recycler);
+        emptyData = findViewById(R.id.no_content);
+
         Bundle bundle = getIntent().getExtras();
         assert bundle != null;
         int movieid = bundle.getInt("MOVIEID");
@@ -51,6 +56,7 @@ public class TrailerActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
 
         fetchTrailers(movieid);
+
     }
 
     private void fetchTrailers(int movieid) {
@@ -77,11 +83,16 @@ public class TrailerActivity extends AppCompatActivity {
                     JSONArray jsonArray = jsonObject.getJSONArray("results");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject param = jsonArray.getJSONObject(i);
-                        String videoId = param.getString("id");
+                        String videoId = param.getString("key");
                         trailers.add(videoId);
                         numbers.add(String.valueOf(num));
                         num++;
                     }
+                    if(trailers.size()==0){
+                        emptyData.setVisibility(View.VISIBLE);
+                    }
+                    else emptyData.setVisibility(View.GONE);
+
                     mAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     Log.e(TAG, "Json parsing error: " + e.getMessage());

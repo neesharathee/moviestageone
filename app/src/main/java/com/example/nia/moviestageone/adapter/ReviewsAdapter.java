@@ -57,7 +57,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.MyViewHo
                 bundle.putString("author", author);
                 bundle.putString("url", url);
                 Intent intent = new Intent(context, ReviewDetail.class);
-                intent.putExtra("Review_bundle", bundle);
+                intent.putExtras(bundle);
                 context.startActivity(intent);
 
             }
