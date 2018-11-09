@@ -1,6 +1,9 @@
 package com.example.nia.moviestageone.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -9,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -55,7 +59,10 @@ public class TrailerActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
-        fetchTrailers(movieid);
+        if (isOnline())
+            fetchTrailers(movieid);
+        else Toast.makeText(this, "Check internet", Toast.LENGTH_SHORT).show();
+
 
     }
 
@@ -88,10 +95,9 @@ public class TrailerActivity extends AppCompatActivity {
                         numbers.add(String.valueOf(num));
                         num++;
                     }
-                    if(trailers.size()==0){
+                    if (trailers.size() == 0) {
                         emptyData.setVisibility(View.VISIBLE);
-                    }
-                    else emptyData.setVisibility(View.GONE);
+                    } else emptyData.setVisibility(View.GONE);
 
                     mAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
@@ -109,5 +115,12 @@ public class TrailerActivity extends AppCompatActivity {
         });
         AppController.getInstance().addToRequestQueue(jsonObjectRequest);
 
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
     }
 }

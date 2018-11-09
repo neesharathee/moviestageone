@@ -1,7 +1,10 @@
 package com.example.nia.moviestageone.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -12,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -77,7 +81,9 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }));
-        fetchImages("popular");
+        if (isOnline())
+            fetchImages("popular");
+        else Toast.makeText(this, "Check internet", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -95,13 +101,18 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_settings) {
             String SearchItem = "popular";
-            fetchImages(SearchItem);
+            if(isOnline())
+                fetchImages(SearchItem);
+            else Toast.makeText(this,"Check internet",Toast.LENGTH_SHORT).show();
+
             mAdapter.notifyDataSetChanged();
             return true;
         }
         if (id == R.id.row4) {
             String SearchItem = "top_rated";
-            fetchImages(SearchItem);
+            if(isOnline())
+                fetchImages(SearchItem);
+            else Toast.makeText(this,"Check internet",Toast.LENGTH_SHORT).show();
             mAdapter.notifyDataSetChanged();
             return true;
         }
@@ -187,6 +198,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         pDialog.dismiss();
+    }
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
     }
 
 }
