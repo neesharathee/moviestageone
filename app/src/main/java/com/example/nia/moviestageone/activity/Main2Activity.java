@@ -3,6 +3,7 @@ package com.example.nia.moviestageone.activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -23,6 +25,7 @@ import com.example.nia.moviestageone.R;
 import com.example.nia.moviestageone.adapter.ReviewsAdapter;
 import com.example.nia.moviestageone.adapter.TrailerAdapter;
 import com.example.nia.moviestageone.app.AppController;
+import com.example.nia.moviestageone.db.DatabaseHelper;
 import com.example.nia.moviestageone.model.Image;
 import com.example.nia.moviestageone.model.Review;
 
@@ -31,12 +34,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.android.volley.VolleyLog.TAG;
 
 public class Main2Activity extends AppCompatActivity {
-    TextView movieTitle, movieReleaseDate, movieUserRating, movieOverView,movieTrailers,movieReviews;
+    TextView movieTitle, movieReleaseDate, movieUserRating, movieOverView, movieTrailers, movieReviews,movieFav;
     ImageView moviePoster;
+    private DatabaseHelper db;
+    private List<Image> imageList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,36 +56,46 @@ public class Main2Activity extends AppCompatActivity {
         moviePoster = findViewById(R.id.poster_image);
         movieTrailers = findViewById(R.id.movie_trailers);
         movieReviews = findViewById(R.id.movie_reviews);
-
+        movieFav = findViewById(R.id.tv_favorite);
+        db = new DatabaseHelper(this);
+        imageList.addAll(db.getAllMovies());
         Bundle bundle = getIntent().getExtras();
         assert bundle != null;
-        String title = bundle.getString("title");
-        String overView = bundle.getString("overview");
+        final String title = bundle.getString("title");
+        final String overView = bundle.getString("overview");
         int rating = bundle.getInt("user_rating");
         final int movieid = bundle.getInt("movie_id");
-        String date = bundle.getString("release_date");
-        String url = bundle.getString("poster_path");
-        String ratingS = Integer.toString(rating);
+        final String date = bundle.getString("release_date");
+        final String url = bundle.getString("poster_path");
+        final String ratingS = Integer.toString(rating);
 
-movieTrailers.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
+        movieFav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //save movie
+                createMovie(movieid,title,overView,ratingS,date,url);
+            }
+        });
 
-        Intent intent = new Intent(Main2Activity.this,TrailerActivity.class);
-        intent.putExtra("MOVIEID",movieid);
-        startActivity(intent);
+        movieTrailers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-    }
-});
-movieReviews.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
+                Intent intent = new Intent(Main2Activity.this, TrailerActivity.class);
+                intent.putExtra("MOVIEID", movieid);
+                startActivity(intent);
 
-        Intent intent = new Intent(Main2Activity.this,ReviewsActivity.class);
-        intent.putExtra("MOVIEID",movieid);
-        startActivity(intent);
-    }
-});
+            }
+        });
+        movieReviews.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(Main2Activity.this, ReviewsActivity.class);
+                intent.putExtra("MOVIEID", movieid);
+                startActivity(intent);
+            }
+        });
 
         movieTitle.setText(title);
         movieReleaseDate.setText(date);
@@ -91,8 +107,29 @@ movieReviews.setOnClickListener(new View.OnClickListener() {
                 .into(moviePoster);
 
 
+    }
+    private void createMovie(int id,
+                             String title,
+                             String overview,
+                             String userrating,
+                             String releasedate,
+                             String posterpath) {
+        // inserting note in db and getting
+        // newly inserted note id
+        long id1 = db.insertMovie(id,title,overview,userrating,releasedate,posterpath);
+if(id1>0)
+    Toast.makeText(this,"Movie added to favorites",Toast.LENGTH_SHORT).show();
+        // get the newly inserted note from db
+//        Note n = db.getNote(id);
+//
+//        if (n != null) {
+//            // adding new note to array list at 0 position
+//            notesList.add(0, n);
+//
+//            // refreshing the list
+//            mAdapter.notifyDataSetChanged();
+//
+//            toggleEmptyNotes();
 
     }
-
-
 }

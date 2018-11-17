@@ -2,8 +2,11 @@ package com.example.nia.moviestageone.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -38,6 +41,8 @@ public class TrailerActivity extends AppCompatActivity {
     ArrayList<String> numbers;
     private ProgressDialog pDialog;
     LinearLayoutManager linearLayoutManager;
+    private  Bundle mBundleRecyclerViewState;
+    private Parcelable mListState = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,5 +127,31 @@ public class TrailerActivity extends AppCompatActivity {
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnected();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mBundleRecyclerViewState = new Bundle();
+        mListState =recyclerView.getLayoutManager().onSaveInstanceState();
+        mBundleRecyclerViewState.putParcelable(getResources().getString(R.string.recycler_scroll_position_key), mListState);
+    }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        //When orientation is changed then grid column count is also changed so get every time
+        Log.e(TAG, "onConfigurationChanged: " );
+        if (mBundleRecyclerViewState != null) {
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    mListState = mBundleRecyclerViewState.getParcelable(getResources().getString(R.string.recycler_scroll_position_key));
+                    recyclerView.getLayoutManager().onRestoreInstanceState(mListState);
+
+                }
+            }, 50);
+        }
+        recyclerView.setLayoutManager(linearLayoutManager);
     }
 }

@@ -17,4 +17,6 @@
     <string name="dummy_text">This is a movie overview</string>
     <string name="popular_movies">Popular Movies</string>
     <string name="top_rated_movies">Top Rated Movies</string>
+    <string name="recycler_scroll_position_key">SCROLL POSITION</string>
+    <string name="favorite_movies">Favorite Movies</string>
 </resources>
