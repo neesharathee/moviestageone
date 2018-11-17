@@ -1,8 +1,14 @@
 package com.example.nia.moviestageone.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -20,6 +27,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.nia.moviestageone.R;
 import com.example.nia.moviestageone.adapter.GalleryAdapter;
 import com.example.nia.moviestageone.app.AppController;
+import com.example.nia.moviestageone.db.DatabaseHelper;
 import com.example.nia.moviestageone.model.Image;
 
 import org.json.JSONArray;
@@ -27,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,6 +46,11 @@ public class MainActivity extends AppCompatActivity {
     private GalleryAdapter mAdapter;
     private RecyclerView recyclerView;
     StaggeredGridLayoutManager mLayoutManager;
+    private  Bundle mBundleRecyclerViewState;
+    private Parcelable mListState = null;
+    private DatabaseHelper db;
+    private List<Image> imageList = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
+        db = new DatabaseHelper(this);
+        imageList.addAll(db.getAllMovies());
 
 
         recyclerView.addOnItemTouchListener(new GalleryAdapter.RecyclerTouchListener(getApplicationContext(), recyclerView, new GalleryAdapter.ClickListener() {
@@ -77,7 +93,9 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }));
-        fetchImages("popular");
+        if (isOnline())
+            fetchImages("popular");
+        else Toast.makeText(this, "Check internet", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -95,13 +113,28 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_settings) {
             String SearchItem = "popular";
-            fetchImages(SearchItem);
+            if(isOnline())
+                fetchImages(SearchItem);
+            else Toast.makeText(this,"Check internet",Toast.LENGTH_SHORT).show();
+
             mAdapter.notifyDataSetChanged();
             return true;
         }
         if (id == R.id.row4) {
             String SearchItem = "top_rated";
-            fetchImages(SearchItem);
+            if(isOnline())
+                fetchImages(SearchItem);
+            else Toast.makeText(this,"Check internet",Toast.LENGTH_SHORT).show();
+            mAdapter.notifyDataSetChanged();
+            return true;
+        }
+        if (id == R.id.row5) {
+            mAdapter = new GalleryAdapter(getApplicationContext(), imageList);
+            pDialog = new ProgressDialog(this);
+            mLayoutManager = new StaggeredGridLayoutManager(2, 1);
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(mAdapter);
             mAdapter.notifyDataSetChanged();
             return true;
         }
@@ -181,12 +214,39 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         pDialog.dismiss();
+        mBundleRecyclerViewState = new Bundle();
+        mListState =recyclerView.getLayoutManager().onSaveInstanceState();
+        mBundleRecyclerViewState.putParcelable(getResources().getString(R.string.recycler_scroll_position_key), mListState);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         pDialog.dismiss();
+    }
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
+    }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        //When orientation is changed then grid column count is also changed so get every time
+        Log.e(TAG, "onConfigurationChanged: " );
+        if (mBundleRecyclerViewState != null) {
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    mListState = mBundleRecyclerViewState.getParcelable(getResources().getString(R.string.recycler_scroll_position_key));
+                    recyclerView.getLayoutManager().onRestoreInstanceState(mListState);
+
+                }
+            }, 50);
+        }
+        recyclerView.setLayoutManager(mLayoutManager);
     }
 
 }

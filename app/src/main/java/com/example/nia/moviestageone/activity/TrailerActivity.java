@@ -1,6 +1,12 @@
 package com.example.nia.moviestageone.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -9,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -34,6 +41,8 @@ public class TrailerActivity extends AppCompatActivity {
     ArrayList<String> numbers;
     private ProgressDialog pDialog;
     LinearLayoutManager linearLayoutManager;
+    private  Bundle mBundleRecyclerViewState;
+    private Parcelable mListState = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +64,10 @@ public class TrailerActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
-        fetchTrailers(movieid);
+        if (isOnline())
+            fetchTrailers(movieid);
+        else Toast.makeText(this, "Check internet", Toast.LENGTH_SHORT).show();
+
 
     }
 
@@ -88,10 +100,9 @@ public class TrailerActivity extends AppCompatActivity {
                         numbers.add(String.valueOf(num));
                         num++;
                     }
-                    if(trailers.size()==0){
+                    if (trailers.size() == 0) {
                         emptyData.setVisibility(View.VISIBLE);
-                    }
-                    else emptyData.setVisibility(View.GONE);
+                    } else emptyData.setVisibility(View.GONE);
 
                     mAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
@@ -109,5 +120,38 @@ public class TrailerActivity extends AppCompatActivity {
         });
         AppController.getInstance().addToRequestQueue(jsonObjectRequest);
 
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mBundleRecyclerViewState = new Bundle();
+        mListState =recyclerView.getLayoutManager().onSaveInstanceState();
+        mBundleRecyclerViewState.putParcelable(getResources().getString(R.string.recycler_scroll_position_key), mListState);
+    }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        //When orientation is changed then grid column count is also changed so get every time
+        Log.e(TAG, "onConfigurationChanged: " );
+        if (mBundleRecyclerViewState != null) {
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    mListState = mBundleRecyclerViewState.getParcelable(getResources().getString(R.string.recycler_scroll_position_key));
+                    recyclerView.getLayoutManager().onRestoreInstanceState(mListState);
+
+                }
+            }, 50);
+        }
+        recyclerView.setLayoutManager(linearLayoutManager);
     }
 }
