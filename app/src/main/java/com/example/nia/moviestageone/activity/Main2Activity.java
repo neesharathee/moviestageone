@@ -117,8 +117,8 @@ public class Main2Activity extends AppCompatActivity {
         // inserting note in db and getting
         // newly inserted note id
         long id1 = db.insertMovie(id,title,overview,userrating,releasedate,posterpath);
-if(id1>0)
-    Toast.makeText(this,"Movie added to favorites",Toast.LENGTH_SHORT).show();
+
+    Toast.makeText(this,"Movie added to favorites  "+id1, Toast.LENGTH_SHORT).show();
         // get the newly inserted note from db
 //        Note n = db.getNote(id);
 //

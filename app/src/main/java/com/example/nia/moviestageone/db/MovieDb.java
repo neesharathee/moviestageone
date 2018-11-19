@@ -10,6 +10,54 @@ public class MovieDb {
     public static final String COLUMN_RELEASE_DATE = "releasedate";
     public static final String COLUMN_POSTER_PATH = "posterpath";
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public String getUserrating() {
+        return userrating;
+    }
+
+    public void setUserrating(String userrating) {
+        this.userrating = userrating;
+    }
+
+    public String getReleasedate() {
+        return releasedate;
+    }
+
+    public void setReleasedate(String releasedate) {
+        this.releasedate = releasedate;
+    }
+
+    public String getPosterpath() {
+        return posterpath;
+    }
+
+    public void setPosterpath(String posterpath) {
+        this.posterpath = posterpath;
+    }
+
     private int id;
     private String title;
     private String overview;
