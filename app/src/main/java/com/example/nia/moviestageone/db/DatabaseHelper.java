@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Movie;
 
 import com.example.nia.moviestageone.model.Image;
 
@@ -111,5 +112,23 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
         //DatabaseManager.getInstance().closeDatabase();
         // return count
         return count;
+    }
+
+    public void deleteFact(Image image) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(MovieDb.TABLE_NAME, MovieDb.COLUMN_ID + " = ?",
+                new String[]{String.valueOf(image.getMovieId())});
+      db.close();
+      //  DatabaseManager.getInstance().closeDatabase();
+    }
+    public void deleteAllFact() {
+       SQLiteDatabase db = this.getWritableDatabase();
+       // SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+        db.delete(MovieDb.TABLE_NAME, null,
+                null);
+      db.close();
+
+       // DatabaseManager.getInstance().closeDatabase();
     }
 }
