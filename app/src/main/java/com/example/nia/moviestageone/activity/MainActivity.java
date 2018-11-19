@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private GalleryAdapter mAdapter;
     private RecyclerView recyclerView;
     StaggeredGridLayoutManager mLayoutManager;
-    private  Bundle mBundleRecyclerViewState;
+    private Bundle mBundleRecyclerViewState;
     private Parcelable mListState = null;
     private DatabaseHelper db;
     private List<Image> imageList = new ArrayList<>();
@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
 
         db = new DatabaseHelper(this);
-
 
 
         recyclerView.addOnItemTouchListener(new GalleryAdapter.RecyclerTouchListener(getApplicationContext(), recyclerView, new GalleryAdapter.ClickListener() {
@@ -114,24 +113,35 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_settings) {
             String SearchItem = "popular";
-            if(isOnline())
+            if (isOnline()) {
                 fetchImages(SearchItem);
-            else Toast.makeText(this,"Check internet",Toast.LENGTH_SHORT).show();
+                mAdapter = new GalleryAdapter(getApplicationContext(), images);
+                mLayoutManager = new StaggeredGridLayoutManager(2, 1);
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                recyclerView.setAdapter(mAdapter);
+            }
+            else Toast.makeText(this, "Check internet", Toast.LENGTH_SHORT).show();
 
             mAdapter.notifyDataSetChanged();
             return true;
         }
         if (id == R.id.row4) {
             String SearchItem = "top_rated";
-            if(isOnline())
+            if (isOnline()) {
                 fetchImages(SearchItem);
-            else Toast.makeText(this,"Check internet",Toast.LENGTH_SHORT).show();
+                mAdapter = new GalleryAdapter(getApplicationContext(), images);
+                mLayoutManager = new StaggeredGridLayoutManager(2, 1);
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                recyclerView.setAdapter(mAdapter);
+            }
+            else Toast.makeText(this, "Check internet", Toast.LENGTH_SHORT).show();
             mAdapter.notifyDataSetChanged();
             return true;
         }
         if (id == R.id.row5) {
             mAdapter = new GalleryAdapter(getApplicationContext(), imageList);
-            pDialog = new ProgressDialog(this);
             mLayoutManager = new StaggeredGridLayoutManager(2, 1);
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -216,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         pDialog.dismiss();
         mBundleRecyclerViewState = new Bundle();
-        mListState =recyclerView.getLayoutManager().onSaveInstanceState();
+        mListState = recyclerView.getLayoutManager().onSaveInstanceState();
         mBundleRecyclerViewState.putParcelable(getResources().getString(R.string.recycler_scroll_position_key), mListState);
     }
 
@@ -225,17 +235,19 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         pDialog.dismiss();
     }
+
     public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnected();
     }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         //When orientation is changed then grid column count is also changed so get every time
-        Log.e(TAG, "onConfigurationChanged: " );
+        Log.e(TAG, "onConfigurationChanged: ");
         if (mBundleRecyclerViewState != null) {
             new Handler().postDelayed(new Runnable() {
 
@@ -253,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(db.getFactsCount()>0)
+        if (db.getFactsCount() > 0)
             imageList.addAll(db.getAllMovies());
     }
 }

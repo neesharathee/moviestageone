@@ -11,7 +11,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +43,7 @@ import static com.android.volley.VolleyLog.TAG;
 public class Main2Activity extends AppCompatActivity {
     TextView movieTitle, movieReleaseDate, movieUserRating, movieOverView, movieTrailers, movieReviews,movieFav;
     ImageView moviePoster;
+    RadioButton radioButton;
     private DatabaseHelper db;
     private List<Image> imageList = new ArrayList<>();
 
@@ -57,6 +60,8 @@ public class Main2Activity extends AppCompatActivity {
         movieTrailers = findViewById(R.id.movie_trailers);
         movieReviews = findViewById(R.id.movie_reviews);
         movieFav = findViewById(R.id.tv_favorite);
+        radioButton = findViewById(R.id.btn_fav);
+
         db = new DatabaseHelper(this);
         imageList.addAll(db.getAllMovies());
         Bundle bundle = getIntent().getExtras();
@@ -69,13 +74,29 @@ public class Main2Activity extends AppCompatActivity {
         final String url = bundle.getString("poster_path");
         final String ratingS = Integer.toString(rating);
 
-        movieFav.setOnClickListener(new View.OnClickListener() {
+        final Image image=new Image();
+        image.setTitle(title);
+        image.setOverview(overView);
+        image.setVoteAverage(rating);
+        image.setMovieId(movieid);
+        image.setDate(date);
+        image.setFinalURl(url);
+
+        radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                //save movie
-                createMovie(movieid,title,overView,ratingS,date,url);
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                    createMovie(movieid,title,overView,ratingS,date,url);
+                else db.deleteFact(image);
             }
         });
+//        movieFav.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //save movie
+//                createMovie(movieid,title,overView,ratingS,date,url);
+//            }
+//        });
 
         movieTrailers.setOnClickListener(new View.OnClickListener() {
             @Override
