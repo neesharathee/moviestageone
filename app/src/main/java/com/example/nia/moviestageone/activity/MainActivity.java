@@ -67,8 +67,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
+
         db = new DatabaseHelper(this);
-        imageList.addAll(db.getAllMovies());
+
 
 
         recyclerView.addOnItemTouchListener(new GalleryAdapter.RecyclerTouchListener(getApplicationContext(), recyclerView, new GalleryAdapter.ClickListener() {
@@ -249,5 +250,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(db.getFactsCount()>0)
+            imageList.addAll(db.getAllMovies());
+    }
 }
 

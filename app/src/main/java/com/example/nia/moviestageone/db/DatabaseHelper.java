@@ -98,4 +98,18 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
         // return notes list
         return imagesList;
     }
+    public int getFactsCount() {
+        String countQuery = "SELECT  * FROM " + MovieDb.TABLE_NAME;
+      SQLiteDatabase db = this.getReadableDatabase();
+       // SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+
+        //DatabaseManager.getInstance().closeDatabase();
+        // return count
+        return count;
+    }
 }
